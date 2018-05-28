@@ -3,11 +3,11 @@
  */
 angular.module('myApp', ['ajoslin.promise-tracker'])
   .controller('help', function ($scope, $http, $log, promiseTracker, $timeout) {
-    $scope.subjectListOptions = {
-      'bug': 'Report a Bug',
-      'account': 'Account Problems',
-      'mobile': 'Mobile',
-      'user': 'Report a Malicious User',
+    $scope.sourceTypeOptions = {
+      'inmobi': 'Inmobi',
+      'aerserv': 'Aerserv',
+      'inmobi-publisher': 'Inmobi Publisher',
+      'aerserv-publisher': 'Aerserv Publisher',
       'other': 'Other'
     };
 
@@ -28,23 +28,24 @@ angular.module('myApp', ['ajoslin.promise-tracker'])
       var config = {
         params : {
           'callback' : 'JSON_CALLBACK',
-          'name' : $scope.name,
-          'email' : $scope.email,
-          'subjectList' : $scope.subjectList,
-          'url' : $scope.url,
-          'comments' : $scope.comments
+          'userId' : $scope.userId,
+          'userIdType' : $scope.userIdType,
+          'sourceType' : $scope.sourceType,
+          'sourceName' : $scope.sourceName,
+          'sourceId' : $scope.sourceId
         },
       };
 
       // Perform JSONP request.
-      var $promise = $http.jsonp('response.json', config)
+      var url = "http://dsr.data.dfw1.inmobi.com:8080/";
+      var $promise = $http.jsonp(url, config)
         .success(function(data, status, headers, config) {
           if (data.status == 'OK') {
-            $scope.name = null;
-            $scope.email = null;
-            $scope.subjectList = null;
-            $scope.url = null;
-            $scope.comments = null;
+            $scope.userId = null;
+            $scope.userIdType = null;
+            $scope.sourceType = null;
+            $scope.sourceName = null;
+            $scope.sourceId = null;
             $scope.messages = 'Your form has been sent!';
             $scope.submitted = false;
           } else {
@@ -61,7 +62,7 @@ angular.module('myApp', ['ajoslin.promise-tracker'])
           // Hide status messages after three seconds.
           $timeout(function() {
             $scope.messages = null;
-          }, 3000);
+          }, 5000);
         });
 
       // Track the request and show its progress to the user.
