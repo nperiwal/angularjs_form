@@ -20,14 +20,13 @@ angular.module('myApp', ['ajoslin.promise-tracker'])
       $scope.submitted = true;
 
       // If form is invalid, return and let AngularJS show validation errors.
-      if (form.$invalid) {
+      /*if (form.$invalid) {
         return;
-      }
+      }*/
 
       // Default values for the request.
       var config = {
         params : {
-          'callback' : 'JSON_CALLBACK',
           'userId' : $scope.userId,
           'userIdType' : $scope.userIdType,
           'sourceType' : $scope.sourceType,
@@ -36,11 +35,29 @@ angular.module('myApp', ['ajoslin.promise-tracker'])
         },
       };
 
+
+      /*var req = {
+       method: 'GET',
+       url: 'http://dsr.data.dfw1.inmobi.com:8080'
+      }
+
+      $http(req).then(function(response) {
+                                        $scope.greeting = response.data;
+                                        console.log(response);
+                                    },
+                                    function(error) {
+                                        console.log(error);
+                                    });*/
+
       // Perform JSONP request.
       var url = "http://dsr.data.dfw1.inmobi.com:8080/";
-      var $promise = $http.jsonp(url, config)
+      $log.info('TEST url' +  url);
+      var $promise = $http.get(url)
         .success(function(data, status, headers, config) {
-          if (data.status == 'OK') {
+          $log.debug('TEST Log');
+          $log.debug(status);
+          $log.debug(data.status);
+          if (status == 200) {
             $scope.userId = null;
             $scope.userIdType = null;
             $scope.sourceType = null;
@@ -54,6 +71,8 @@ angular.module('myApp', ['ajoslin.promise-tracker'])
           }
         })
         .error(function(data, status, headers, config) {
+          $log.info('Error - data' + data);
+          $log.info('Error - status' + status);
           $scope.progress = data;
           $scope.messages = 'There was a network error. Try again later.';
           $log.error(data);
